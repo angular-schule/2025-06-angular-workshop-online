@@ -13,6 +13,8 @@ describe('RatingDisplay', () => {
     .compileComponents();
 
     fixture = TestBed.createComponent(RatingDisplay);
+    fixture.componentRef.setInput('value', 4);
+
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

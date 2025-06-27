@@ -13,7 +13,19 @@ describe('BookCard', () => {
     .compileComponents();
 
     fixture = TestBed.createComponent(BookCard);
+
+    // (Required) Input setzen
+    fixture.componentRef.setInput('book', {
+      isbn: '',
+      title: '',
+      description: '',
+      rating: 5,
+      price: 100
+    });
+
     component = fixture.componentInstance;
+    // Zugriff auf DOM-Element
+    // fixture.nativeElement.querySelector()
     fixture.detectChanges();
   });
 
@@ -21,3 +33,4 @@ describe('BookCard', () => {
     expect(component).toBeTruthy();
   });
 });
+

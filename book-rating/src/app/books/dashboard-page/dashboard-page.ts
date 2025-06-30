@@ -3,6 +3,7 @@ import { Book } from '../shared/book';
 import { BookCard } from '../book-card/book-card';
 import { BookRatingHelper } from '../shared/book-rating-helper';
 import { BookStore } from '../shared/book-store';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-dashboard-page',

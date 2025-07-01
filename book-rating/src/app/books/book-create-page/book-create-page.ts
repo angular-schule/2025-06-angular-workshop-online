@@ -1,6 +1,9 @@
 import { JsonPipe } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Book } from '../shared/book';
+import { BookStore } from '../shared/book-store';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-book-create-page',
@@ -9,6 +12,9 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
   styleUrl: './book-create-page.scss'
 })
 export class BookCreatePage {
+  #bookStore = inject(BookStore);
+  #router = inject(Router);
+
   bookForm = new FormGroup({
     isbn: new FormControl('', {
       nonNullable: true,
@@ -50,6 +56,18 @@ export class BookCreatePage {
 
   hasError(c: FormControl, errorCode: string): boolean {
     return c.hasError(errorCode) && c.touched;
+  }
+
+  submitForm() {
+    if (this.bookForm.invalid) {
+      return;
+    }
+
+    const newBook: Book = this.bookForm.getRawValue();
+
+    this.#bookStore.create(newBook).subscribe(receivedBook => {
+      this.#router.navigate(['/books', receivedBook.isbn]);
+    });
   }
 }
 

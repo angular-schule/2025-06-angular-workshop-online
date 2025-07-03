@@ -29,7 +29,9 @@
             "styles": [
               "src/styles.scss"
             ],
-            "polyfills": ["zone.js"]
+            "polyfills": [
+              "zone.js"
+            ]
           },
           "configurations": {
             "production": {
@@ -84,10 +86,19 @@
             "styles": [
               "src/styles.scss"
             ],
-            "polyfills": ["zone.js"]
+            "polyfills": [
+              "zone.js"
+            ]
           }
         }
       }
     }
+  },
+  "cli": {
+    "schematicCollections": [
+      "@ngrx/schematics",
+      "@ngrx/schematics",
+      "@ngrx/schematics"
+    ]
   }
 }

@@ -5,6 +5,10 @@ import { BookRatingHelper } from '../shared/book-rating-helper';
 import { BookStore } from '../shared/book-store';
 import { HttpErrorResponse } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
+import { Store } from '@ngrx/store';
+import { BookActions } from '../store/book.actions';
+import { map } from 'rxjs';
+import { selectBooks } from '../store/book.selectors';
 
 @Component({
   selector: 'app-dashboard-page',
@@ -13,7 +17,10 @@ import { DatePipe } from '@angular/common';
   styleUrl: './dashboard-page.scss'
 })
 export class DashboardPage implements OnDestroy {
-  protected books = signal<Book[]>([]);
+  #store = inject(Store);
+
+  // protected books = signal<Book[]>([]);
+  protected books = this.#store.selectSignal(selectBooks);
 
   protected myDate = signal(Date.now());
   #dateInterval = setInterval(() => this.myDate.set(Date.now()), 1000);
@@ -21,10 +28,13 @@ export class DashboardPage implements OnDestroy {
   #ratingHelper = inject(BookRatingHelper);
   #bookStore = inject(BookStore);
 
+
   constructor() {
-    this.#bookStore.getAll().subscribe(receivedBooks => {
+    this.#store.dispatch(BookActions.loadBooks());
+
+    /*this.#bookStore.getAll().subscribe(receivedBooks => {
       this.books.set(receivedBooks);
-    });
+    });*/
   }
 
   doRateUp(book: Book) {
@@ -47,7 +57,7 @@ export class DashboardPage implements OnDestroy {
       // this.#bookStore.getAll().subscribe(receivedBooks => this.books.set(receivedBooks));
 
       // ODER: Buchliste lokal filtern
-      this.books.update(currentList => currentList.filter(b => b.isbn !== book.isbn));
+      // this.books.update(currentList => currentList.filter(b => b.isbn !== book.isbn));
     });
   }
 
@@ -55,7 +65,7 @@ export class DashboardPage implements OnDestroy {
     // [1,2,3,4,5,6].map(e => e * 10); // [10, 20, 30, 40, 50, 60]
     // [1,2,3,4,5,6,7,8].filter(e => e > 5) // [6, 7, 8]
 
-    this.books.update(currentList => {
+    /*this.books.update(currentList => {
       return currentList.map(b => {
         if (b.isbn === ratedBook.isbn) {
           return ratedBook;
@@ -64,7 +74,7 @@ export class DashboardPage implements OnDestroy {
         }
       })
 
-    });
+    });*/
   }
 
   ngOnDestroy() {

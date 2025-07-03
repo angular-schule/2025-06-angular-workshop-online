@@ -1,5 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { debounceTime, filter, startWith, switchMap } from 'rxjs';
+import { BookStore } from '../shared/book-store';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-book-search-page',
@@ -8,11 +11,12 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
   styleUrl: './book-search-page.scss'
 })
 export class BookSearchPage {
+  #bookStore = inject(BookStore);
   searchControl = new FormControl('', { nonNullable: true });
 
-  constructor() {
-    this.searchControl.valueChanges.subscribe(e => {
-      console.log(e);
-    });
-  }
+  protected results = toSignal(this.searchControl.valueChanges.pipe(
+    filter(term => term.length >= 3),
+    debounceTime(250),
+    switchMap(term => this.#bookStore.search(term))
+  ), { initialValue: [] });
 }

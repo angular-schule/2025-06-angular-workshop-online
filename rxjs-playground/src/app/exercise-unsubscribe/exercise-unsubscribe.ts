@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, DestroyRef, inject, OnDestroy } from '@angular/core';
 import { Subject, ReplaySubject, timer, Subscription, takeWhile, takeUntil, take } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
@@ -22,11 +22,13 @@ export class ExerciseUnsubscribe implements OnDestroy {
    *
    * Es gibt noch weitere Wege, das Problem zu lösen ...
    * - takeUntil() + Subject
-   * - takeUntilDestroyed()
+   * - takeUntilDestroyed() (nur im Konstruktor oder vorher möglich! sonst muss DestroyRef übergeben werden)
    * - AsyncPipe
    * - toSignal()
    */
   // #destroy$ = new Subject<void>();
+
+  // #dref = inject(DestroyRef);
 
   constructor() {
     const interval$ = timer(0, 1000);

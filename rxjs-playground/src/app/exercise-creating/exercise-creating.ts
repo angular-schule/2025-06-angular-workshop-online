@@ -33,13 +33,13 @@ export class ExerciseCreating {
     // timer(3000, 1000)      // ---------0---1---2---3---4---5 ...
     // timer(0, 1000)         // 0---1---2---3---4---5 ...
 
-    timer(0, 1000).pipe(
+   /* timer(0, 1000).pipe(
       map(e => e * 3),
       filter(e => e % 2 === 0)
     ).subscribe({
       next: e => this.log(e),
       complete: () => this.log('COMPLETE')
-    });
+    });*/
 
 
     /******************************/
@@ -54,7 +54,17 @@ export class ExerciseCreating {
 
       setTimeout(() => sub.next(100), 1000)
       setTimeout(() => sub.next(200), 2000)
-      setTimeout(() => sub.complete(), 3000)
+      const timer300 = setTimeout(() => {
+        sub.next(300);
+        console.log('TIMEOUT 300');
+      }, 6000)
+      setTimeout(() => sub.complete(), 8000)
+
+      // Teardown Logic
+      return () => {
+        console.log('TEARDOWN')
+        clearTimeout(timer300);
+      };
     }
 
     // Observer: empfängt die Daten
@@ -71,7 +81,12 @@ export class ExerciseCreating {
     const myObs$ = new Observable(producer);
 
     // Subscription: Vertrag zwischen Observer und Observable
-    // myObs$.subscribe(obs);
+    const sub = myObs$.subscribe(obs);
+
+    setTimeout(() => {
+      console.log('UNSUBSCRIBE');
+      sub.unsubscribe();
+    }, 3000)
 
 
     const myObs2$ = new Observable<string>(sub => {

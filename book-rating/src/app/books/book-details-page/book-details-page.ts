@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Book } from '../shared/book';
 import { BookStore } from '../shared/book-store';
+import { filter, map, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-book-details-page',
@@ -15,18 +16,15 @@ export class BookDetailsPage {
   protected book = signal<Book | undefined>(undefined);
 
   constructor() {
-    // PULL
-    // const isbn = this.#route.snapshot.paramMap.get('isbn');
 
-    // PUSH
-    // TODO: Verschachtelte Subscriptions vermeiden
-    this.#route.paramMap.subscribe(params => {
-      const isbn = params.get('isbn');
-      if (isbn) {
-        this.#bookStore.getSingle(isbn).subscribe(receivedBook => {
-          this.book.set(receivedBook);
-        });
-      }
+    this.#route.paramMap.pipe(
+      map(params => params.get('isbn')),
+      filter(isbn => isbn !== null),
+      switchMap(isbn => this.#bookStore.getSingle(isbn))
+    ).subscribe(receivedBook => {
+      this.book.set(receivedBook);
     });
+
+
   }
 }
